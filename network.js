@@ -8,7 +8,7 @@ const {
 } = require("composer-common");
 
 //declate namespace
-const namespace = "org.example.merechain";
+const namespace = "org.example.medicalrecord";
 
 //in-memory card store for testing so cards are not persisted to the file system
 const cardStore = require("composer-common").NetworkCardStoreManager.getCardStore(
@@ -21,13 +21,13 @@ let adminConnection;
 //this is the business network connection the tests will use.
 let businessNetworkConnection;
 
-let businessNetworkName = "medicalrecord-v2";
+let businessNetworkName = "medicalrecord";
 let factory;
 
 async function importCardForIdentity(cardName, identity) {
   //use admin connection
   adminConnection = new AdminConnection();
-  businessNetworkName = "medicalrecord-v2";
+  businessNetworkName = "medicalrecord";
 
   //declare metadata
   const metadata = {
@@ -48,7 +48,7 @@ async function importCardForIdentity(cardName, identity) {
 module.exports = {
   registerMember: async function(cardId, firstName, lastName, email) {
     businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect("admin@medicalrecord-v2");
+    await businessNetworkConnection.connect("admin@medicalrecord");
 
     factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
@@ -69,17 +69,54 @@ module.exports = {
 
     return true;
   },
-  connect: function(cardname) {
+  connect: async function(cardname) {
     businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect(cardname);
+    console.log("connected business network");
+
+    return true;
+  },
+  getBusiness() {
+    return businessNetworkConnection;
+  },
+  getPersonalDetails: function(callback) {
     businessNetworkConnection
-      .connect(cardname)
-      .then(result => {
-        businessNetworkConnection.getParticipantRegistry(namespace+".Patient").then(function(p) {
-          p.getAll().then(function(all) {
-            console.log(all)
-          })
-        })
-      })
-      .catch(err => {});
+      .getAssetRegistry(namespace + ".PersonalDetails")
+      .then(p => {
+        p.getAll().then(result => {
+          callback(result);
+        });
+      });
+  },
+  getMedicalRecords: function(callback) {
+    businessNetworkConnection
+      .getAssetRegistry(namespace + ".MedicalRecord")
+      .then(m => {
+        m.getAll().then(result => {
+          callback(result);
+        });
+      });
+  },
+  getMedicalRecordDetails: function(mr_id, callback) {
+    var histories = [];
+    businessNetworkConnection
+      .getTransactionRegistry(`${namespace}.UpdateMedicalRecord`)
+      .then(transactionRegistry => {
+        transactionRegistry.getAll().then(trans => {
+          trans.forEach(t => {
+            if (t.medicalRecord["$identifier"] == mr_id) {
+              his = {
+                type: "Update",
+                timestamp: t.timestamp,
+                content: t.content
+              };
+              console.log(his);
+              histories.push(his);
+            }
+          });
+
+          callback(histories)
+        });
+      });
   }
 };

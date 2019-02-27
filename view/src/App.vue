@@ -13,28 +13,50 @@
       </b-navbar>
     </div>
     <div>
-      <b-jumbotron
-        header="Hi patient"
-        lead="Have a good day!"
-        class="m-0"
-      ></b-jumbotron>
+      <b-jumbotron header="Hi patient" lead="Have a good day!" class="m-0"></b-jumbotron>
     </div>
-    <PatientTabbar></PatientTabbar>
+    <b-tabs content-class="mt-3" pills card>
+      <b-tab title="Personal details" active>
+        <personal-details v-bind:user_info="user_info"></personal-details>
+      </b-tab>
+      <b-tab title="Medical Record">
+        <medical-records v-bind:medical_records="medical_records"></medical-records>
+      </b-tab>
+      <b-tab title="Access management"></b-tab>
+    </b-tabs>
   </div>
 </template>
 
 <script>
-import PatientTabbar from "./component/patient/PatientTabbar";
+import PersonalDetails from "./component/patient/PersonalDetails";
+import MedicalRecords from "./component/patient/MedicalRecords";
 
 export default {
   name: "app",
   components: {
-    PatientTabbar: PatientTabbar
+    "personal-details": PersonalDetails,
+    "medical-records": MedicalRecords
   },
   data() {
     return {
-      msg: "Welcome to Your Vue.js App"
+      user_info: {},
+      medical_records: []
     };
+  },
+  mounted: function() {
+    self = this;
+
+    this.$http.get("/patient").then(res => {
+      console.log(res);
+      let data = res.body;
+      self.user_info = data[0];
+      console.log(self.user_info);
+    });
+
+    this.$http.get("/medicalrecord").then(res => {
+      self.medical_records = res.body;
+      console.log(self.medical_records);
+    });
   }
 };
 </script>
