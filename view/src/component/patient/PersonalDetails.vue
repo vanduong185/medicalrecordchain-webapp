@@ -32,6 +32,10 @@
         </b-form-group>
       </div>
     </div>
+
+    <div class="float-right mt-3">
+      <b-button variant="outline-primary" @click="update()" >Update</b-button>
+    </div>
   </div>
 </template>
 
@@ -43,7 +47,18 @@ export default {
       type: Object
     }
   },
-  data: {}
+  data: {},
+  methods: {
+    update: function() {
+      self = this;
+
+      this.$http.put("/patient", self.user_info).then(res => {
+        if (res.body.message == "success") {
+
+        }
+      })
+    }
+  }
 };
 </script>
 

@@ -47,15 +47,12 @@ export default {
     self = this;
 
     this.$http.get("/patient").then(res => {
-      console.log(res);
       let data = res.body;
       self.user_info = data[0];
-      console.log(self.user_info);
     });
 
     this.$http.get("/medicalrecord").then(res => {
       self.medical_records = res.body;
-      console.log(self.medical_records);
     });
   }
 };
@@ -82,9 +79,5 @@ ul {
 li {
   display: inline-block;
   margin: 0 10px;
-}
-
-a {
-  color: #42b983;
 }
 </style>

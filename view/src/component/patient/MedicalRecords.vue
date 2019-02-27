@@ -1,24 +1,21 @@
 <template>
   <div id="medical-records">
     <b-table
-      selectedVariant="success"
       selectable
       select-mode="single"
       striped
       hover
       v-bind:items="medical_records"
+      v-bind:fields="fields"
       @row-selected="rowSelected"
     />
     <b-modal
       ref="myModalRef"
+      size="lg"
       hide-footer
       v-bind:title="'History of medical record ' + selected_item.id"
     >
-      <b-table
-        striped
-        hover
-        v-bind:items="histories_medical_record"
-      />
+      <b-table striped hover v-bind:items="histories_medical_record"/>
     </b-modal>
   </div>
 </template>
@@ -33,6 +30,7 @@ export default {
   },
   data() {
     return {
+      fields: ["id", "version", "content", "creatorId"],
       histories_medical_record: [],
       selected_item: {
         id: ""
@@ -42,13 +40,22 @@ export default {
   methods: {
     rowSelected(items) {
       self = this;
-      console.log(items);
       this.selected_item = items[0];
+
       this.$refs.myModalRef.show();
-      this.$http.get("/medicalrecord-details", {params: {mr_id: items[0].id}}).then(res => {
-        console.log(res);
-        self.histories_medical_record = res.body;
-      });
+      this.$http
+        .get("/medicalrecord-details", {
+          params: {
+            data: {
+              mr_id: items[0].id,
+              pat_id: items[0].ownerId,
+              prac_id: items[0].creatorId
+            }
+          }
+        })
+        .then(res => {
+          self.histories_medical_record = res.body;
+        });
     }
   }
 };

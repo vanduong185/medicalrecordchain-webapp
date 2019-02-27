@@ -97,25 +97,53 @@ module.exports = {
         });
       });
   },
-  getMedicalRecordDetails: function(mr_id, callback) {
+  getMedicalRecordDetails: function(data, callback) {
     var histories = [];
     businessNetworkConnection
       .getTransactionRegistry(`${namespace}.UpdateMedicalRecord`)
       .then(transactionRegistry => {
         transactionRegistry.getAll().then(trans => {
           trans.forEach(t => {
-            if (t.medicalRecord["$identifier"] == mr_id) {
+            if (t.medicalRecord["$identifier"] == data.mr_id) {
               his = {
                 type: "Update",
                 timestamp: t.timestamp,
                 content: t.content
               };
-              console.log(his);
               histories.push(his);
             }
           });
 
-          callback(histories)
+          businessNetworkConnection
+            .getTransactionRegistry(`${namespace}.CreateMedicalRecord`)
+            .then(transactionRegistry => {
+              transactionRegistry.getAll().then(trans => {
+                trans.forEach(t => {
+                  if (t.patient["$identifier"] == data.pat_id && t.practitioner["$identifier"] == data.prac_id) {
+                    his = {
+                      type: "Create",
+                      timestamp: t.timestamp,
+                      content: t.content
+                    };
+                    histories.push(his);
+                  }
+                });
+                callback(histories);
+              })
+            });
+        });
+      });
+  },
+  updatePersonalDetails(data, callback) {
+    let serializer = businessNetworkConnection.getBusinessNetwork().getSerializer();
+
+    personal_details = serializer.fromJSON(data);
+
+    businessNetworkConnection
+      .getAssetRegistry(namespace + ".PersonalDetails")
+      .then(p => {
+        p.update(personal_details).then(() => {
+          callback("success")
         });
       });
   }

@@ -32,22 +32,36 @@ app.get("/medicalrecord", function(req, res) {
         id: record.id,
         version: record.version,
         content: record.description,
-        creatorId: record.author["$identifier"]
+        creatorId: record.author["$identifier"],
+        ownerId: record.owner["$identifier"]
       }
       data.push(r);
     });
 
-    console.log(data);
     res.send(data);
   })
 })
 
 app.get("/medicalrecord-details", function (req, res) {
-  console.log(req.query);
-  mr_id = req.query.mr_id;
-  network.getMedicalRecordDetails(mr_id, function(histories) {
+  data = req.query.data;
+  network.getMedicalRecordDetails(data, function(histories) {
     res.send(histories);
   });
+})
+
+app.put("/patient", function(req, res) {
+  network.updatePersonalDetails(req.body, function(message){
+    if (message == "success") {
+      res.json({
+        message: "success"
+      })
+    }
+    else {
+      res.json({
+        message: "fail"
+      })
+    }
+  })
 })
 
 app.listen(8000, function() {
