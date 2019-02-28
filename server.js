@@ -2,11 +2,11 @@ const express = require("express");
 const bodyparser = require("body-parser");
 var network = require("./network");
 
-network.connect("patient1@medicalrecord");
+network.connect("patient1@medicalrecord-v2");
 
 //network.getMedicalRecordDetails();
 
-const NAMESPACE = "org.example.medicalrecord"
+const NAMESPACE = "org.example.merechain"
 
 var app = express();
 app.use(bodyparser.urlencoded({extended: false}));
@@ -19,6 +19,12 @@ app.get("/", function(req, res) {
 
 app.get("/patient", function(req, res) {
   network.getPersonalDetails(function(result) {
+    res.send(result)
+  })
+})
+
+app.get("/practition", function(req, res) {
+  network.getPractitionerPublicDetails(function(result) {
     res.send(result)
   })
 })
@@ -64,6 +70,6 @@ app.put("/patient", function(req, res) {
   })
 })
 
-app.listen(8000, function() {
-  console.log("App listening on port 8000");
+app.listen(8888, function() {
+  console.log("App listening on port 8888");
 })

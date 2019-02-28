@@ -8,7 +8,7 @@ const {
 } = require("composer-common");
 
 //declate namespace
-const namespace = "org.example.medicalrecord";
+const namespace = "org.example.merechain";
 
 //in-memory card store for testing so cards are not persisted to the file system
 const cardStore = require("composer-common").NetworkCardStoreManager.getCardStore(
@@ -21,13 +21,13 @@ let adminConnection;
 //this is the business network connection the tests will use.
 let businessNetworkConnection;
 
-let businessNetworkName = "medicalrecord";
+let businessNetworkName = "medicalrecord-v2";
 let factory;
 
 async function importCardForIdentity(cardName, identity) {
   //use admin connection
   adminConnection = new AdminConnection();
-  businessNetworkName = "medicalrecord";
+  businessNetworkName = "medicalrecord-v2";
 
   //declare metadata
   const metadata = {
@@ -48,7 +48,7 @@ async function importCardForIdentity(cardName, identity) {
 module.exports = {
   registerMember: async function(cardId, firstName, lastName, email) {
     businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect("admin@medicalrecord");
+    await businessNetworkConnection.connect("admin@medicalrecord-v2");
 
     factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
@@ -144,6 +144,15 @@ module.exports = {
       .then(p => {
         p.update(personal_details).then(() => {
           callback("success")
+        });
+      });
+  },
+  getPractitionerPublicDetails: function(callback) {
+    businessNetworkConnection
+      .getAssetRegistry(namespace + ".PractitionerPublicProfile")
+      .then(p => {
+        p.getAll().then(result => {
+          callback(result);
         });
       });
   }

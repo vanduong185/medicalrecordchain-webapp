@@ -19,6 +19,9 @@
       <b-tab title="Personal details" active>
         <personal-details v-bind:user_info="user_info"></personal-details>
       </b-tab>
+      <b-tab title="Practitioner Public details" active>
+        <practitioner-public-details v-bind:practition_infor="practition_infor"></practitioner-public-details>
+      </b-tab>
       <b-tab title="Medical Record">
         <medical-records v-bind:medical_records="medical_records"></medical-records>
       </b-tab>
@@ -30,16 +33,19 @@
 <script>
 import PersonalDetails from "./component/patient/PersonalDetails";
 import MedicalRecords from "./component/patient/MedicalRecords";
+import practitionerPublicDetails from "./component/practitioner/PractitionerPublicDetails";
 
 export default {
   name: "app",
   components: {
     "personal-details": PersonalDetails,
-    "medical-records": MedicalRecords
+    "medical-records": MedicalRecords,
+    "practitioner-public-details":practitionerPublicDetails
   },
   data() {
     return {
       user_info: {},
+      practition_infor:{},
       medical_records: []
     };
   },
@@ -49,6 +55,11 @@ export default {
     this.$http.get("/patient").then(res => {
       let data = res.body;
       self.user_info = data[0];
+    });
+
+    this.$http.get("/practition").then(res => {
+      let data = res.body;
+      self.practition_infor = data[0];
     });
 
     this.$http.get("/medicalrecord").then(res => {
