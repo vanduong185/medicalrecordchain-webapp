@@ -4,8 +4,6 @@ var network = require("./network");
 
 network.connect("patient1@medicalrecord");
 
-//network.getMedicalRecordDetails();
-
 const NAMESPACE = "org.example.medicalrecord"
 
 var app = express();
@@ -19,6 +17,12 @@ app.get("/", function(req, res) {
 
 app.get("/patient", function(req, res) {
   network.getPersonalDetails(function(result) {
+    res.send(result)
+  })
+})
+
+app.get("/practition", function(req, res) {
+  network.getPractitionerPublicDetails(function(result) {
     res.send(result)
   })
 })

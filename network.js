@@ -48,7 +48,7 @@ async function importCardForIdentity(cardName, identity) {
 module.exports = {
   registerMember: async function(cardId, firstName, lastName, email) {
     businessNetworkConnection = new BusinessNetworkConnection();
-    await businessNetworkConnection.connect("admin@medicalrecord");
+    await businessNetworkConnection.connect("admin@medicalrecord-v2");
 
     factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
@@ -213,5 +213,14 @@ module.exports = {
     businessNetworkConnection.submitTransaction(resource).then(result => {
       callback("success")
     })
+  },
+  getPractitionerPublicDetails: function(callback) {
+    businessNetworkConnection
+      .getAssetRegistry(namespace + ".PractitionerPublicProfile")
+      .then(p => {
+        p.getAll().then(result => {
+          callback(result);
+        });
+      });
   }
 };

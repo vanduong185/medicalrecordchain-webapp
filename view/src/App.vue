@@ -19,6 +19,9 @@
       <b-tab title="Personal details" active>
         <personal-details v-bind:user_info="user_info"></personal-details>
       </b-tab>
+      <b-tab title="Practitioner Public details" active>
+        <practitioner-public-details v-bind:practition_infor="practition_infor"></practitioner-public-details>
+      </b-tab>
       <b-tab title="Medical Record">
         <medical-records v-bind:medical_records="medical_records"></medical-records>
       </b-tab>
@@ -34,19 +37,23 @@ import PersonalDetails from "./component/patient/PersonalDetails";
 import MedicalRecords from "./component/patient/MedicalRecords";
 import AccessManagement from "./component/patient/AccessManagement";
 import { log } from 'util';
+import practitionerPublicDetails from "./component/practitioner/PractitionerPublicDetails";
 
 export default {
   name: "app",
   components: {
     "personal-details": PersonalDetails,
     "medical-records": MedicalRecords,
-    "access-management": AccessManagement
+    "access-management": AccessManagement,
+    "practitioner-public-details":practitionerPublicDetails
   },
   data() {
     return {
       user_info: {},
       medical_records: [],
-      list_prac: []
+      list_prac: [],
+      practition_infor:{},
+      medical_records: []
     };
   },
   mounted: function() {
@@ -55,9 +62,12 @@ export default {
     this.$http.get("/patient").then(res => {
       let data = res.body;
       self.user_info = data[0];
-      console.log(self.$localStorage.get("user_id"));
       self.$localStorage.set("user_id", self.user_info.owner.split("#")[1]);
-      console.log(self.$localStorage.get("user_id"));
+    });
+
+    this.$http.get("/practition").then(res => {
+      let data = res.body;
+      self.practition_infor = data[0];
     });
 
     this.$http.get("/medicalrecord").then(res => {
@@ -65,8 +75,6 @@ export default {
     });
 
     this.$http.get("/practitioner-public-profile").then(res => {
-      console.log(res.body);
-      
       self.list_prac = res.body
     })
 
