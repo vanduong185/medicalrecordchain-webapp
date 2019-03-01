@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "bootstrap": "^4.3.1",
     "composer-admin": "^0.20.7",
     "composer-client": "^0.20.7",
     "composer-common": "^0.20.7",

@@ -1,16 +1,19 @@
 <template>
   <div id="app">
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="info">
-        <b-navbar-brand href="#">Electronic Medical Record</b-navbar-brand>
+        <b-navbar toggleable="lg" type="dark" variant="info">
+          <b-navbar-brand href="#">
+            Electronic Medical Record
+            <button class="btn btn-danger" @click=" logout()">Log out</button>
+          </b-navbar-brand>
 
-        <b-navbar-toggle target="nav_collapse"/>
+          <b-navbar-toggle target="nav_collapse"/>
 
-        <b-collapse is-nav id="nav_collapse">
-          <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto"></b-navbar-nav>
-        </b-collapse>
-      </b-navbar>
+          <b-collapse is-nav id="nav_collapse">
+            <!-- Right aligned nav items -->
+            <b-navbar-nav class="ml-auto"></b-navbar-nav>
+          </b-collapse>
+        </b-navbar>
     </div>
     <div>
       <b-jumbotron header="Hi patient" lead="Have a good day!" class="m-0"></b-jumbotron>
@@ -27,6 +30,11 @@
       </b-tab>
       <b-tab title="Access management">
         <access-management :list_prac="list_prac"></access-management>
+      <b-tab title="Register">
+        <register></register>
+      </b-tab>
+      <b-tab title="LogIn">
+        <login></login>
       </b-tab>
     </b-tabs>
   </div>
@@ -38,6 +46,8 @@ import MedicalRecords from "./component/patient/MedicalRecords";
 import AccessManagement from "./component/patient/AccessManagement";
 import { log } from 'util';
 import practitionerPublicDetails from "./component/practitioner/PractitionerPublicDetails";
+import Register from "./component/register/Register";
+import LogIn from "./component/login/LogIn";
 
 export default {
   name: "app",
@@ -45,7 +55,9 @@ export default {
     "personal-details": PersonalDetails,
     "medical-records": MedicalRecords,
     "access-management": AccessManagement,
-    "practitioner-public-details":practitionerPublicDetails
+    "practitioner-public-details":practitionerPublicDetails,
+    register: Register,
+    login: LogIn
   },
   data() {
     return {
@@ -78,30 +90,28 @@ export default {
       self.list_prac = res.body
     })
 
+  },
+  methods: {
+    logout() {
+      self = this;
+      console.log(this.id);
+      this.$http.post("/logout", {
+        idCard: self.user_info.idCard
+      });
+    }
   }
 };
 </script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  position: relative;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
-h1,
-h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
+button {
+  float: right;
 }
 </style>

@@ -5,7 +5,8 @@ import VueResource from "vue-resource";
 import VueLocalStorage from 'vue-localstorage'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-
+import Register from './component/register/Register.vue'
+import LogIn from './component/login/LogIn.vue'
 Vue.use(BootstrapVue)
 Vue.use(VueResource)
 Vue.use(VueLocalStorage)
