@@ -70,7 +70,7 @@ module.exports = {
 
     return true;
   },
-  registerPratitioner: async function (id, cardName) {
+  registerPractitioner: async function (id, cardName) {
     businessNetworkConnection = new BusinessNetworkConnection();
     await businessNetworkConnection.connect("admin@medicalrecord");
 
@@ -94,6 +94,57 @@ module.exports = {
 
     return true;
   },
+  createMedicalRecord: async function (id, description, patientId, pratitionerId) {
+    businessNetworkConnection = new BusinessNetworkConnection();
+
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    const medicalRecord = factory.newResource(namespace, "MedicalRecord", id);
+    medicalRecord.description = description;
+    medicalRecord.version = 1;
+    medicalRecord.owner = factory.newRelationship(namespace, 'Patient', patientId);
+    medicalRecord.author = factory.newRelationship(namespace, 'Practitioner', pratitionerId);
+
+
+    const assetRegistry = await businessNetworkConnection.getAssetRegistry(
+      namespace + ".MedicalRecord"
+    );
+    await assetRegistry.add(medicalRecord);
+
+    //create transaction
+    const createMedicalRecordTransaction = factory.newTransaction(namespace, 'CreateMedicalRecord');
+    createMedicalRecordTransaction.content = description;
+    createMedicalRecordTransaction.practitioner = factory.newRelationship(namespace, 'Practitioner', pratitionerId);
+    createMedicalRecordTransaction.patient = factory.newRelationship(namespace, 'Patient', patientId);
+
+    //submit transaction
+    await businessNetworkConnection.submitTransaction(createMedicalRecordTransaction);
+
+    return true;
+  },
+  updateMedicalRecord: async function (idMedicalRecord, pratitionerId, content) {
+    businessNetworkConnection = new BusinessNetworkConnection();
+
+
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    //create transaction
+    const updateMedicalRecordTransaction = factory.newTransaction(namespace, 'UpdateMedicalRecord');
+    updateMedicalRecordTransaction.content = content;
+    updateMedicalRecordTransaction.practitioner = factory.newRelationship(namespace, 'Practitioner', pratitionerId);
+    updateMedicalRecordTransaction.medicalRecord = factory.newRelationship(namespace, 'MedicalRecord', idMedicalRecord);
+    await businessNetworkConnection.submitTransaction(updateMedicalRecordTransaction);
+
+    let medicalRecord = await businessNetworkConnection.getParticipantRegistry(
+      namespace + ".Medicalrecord"
+    );
+    updateMedicalRecordTransaction.medicalRecord.description = update.content;
+    updateMedicalRecordTransaction.medicalRecord.version = updateMedicalRecordTransaction.version + 1;
+    medicalRecord.update(updateMedicalRecordTransaction.medicalRecord.description);
+    medicalRecord.update(updateMedicalRecordTransaction.medicalRecord.version);
+
+  },
+
   logout: async function (cardname) {
     businessNetworkConnection = new BusinessNetworkConnection();
     await businessNetworkConnection.disconnect(cardname);

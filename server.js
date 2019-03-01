@@ -104,6 +104,38 @@ app.post("/logout", function (req, res) {
     }
   })
 })
+//create medical record
+app.post("/create-medicalrecord", function (req, res) {
+  network.createMedicalRecord(req.body.id, req.body.description, req.body.patientId, req.body.pratitionerId)
+    .then((response) => {
+      if (message == "success") {
+        response.json({
+          message: "success"
+        })
+      }
+      else {
+        response.json({
+          message: "fail"
+        })
+      }
+    })
+})
+//update medical record 
+app.put("/update-medicalrecord", function (req, res) {
+  network.createMedicalRecord(req.body.id, req.body.pratitionerId, req.body.content)
+    .then((response) => {
+      if (message == "success") {
+        res.json({
+          message: "success"
+        })
+      }
+      else {
+        res.json({
+          message: "fail"
+        })
+      }
+    })
+})
 
 app.listen(8000, function () {
   console.log("App listening on port 8000");
