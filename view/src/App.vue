@@ -22,7 +22,9 @@
       <b-tab title="Medical Record">
         <medical-records v-bind:medical_records="medical_records"></medical-records>
       </b-tab>
-      <b-tab title="Access management"></b-tab>
+      <b-tab title="Access management">
+        <access-management :list_prac="list_prac"></access-management>
+      </b-tab>
     </b-tabs>
   </div>
 </template>
@@ -30,17 +32,21 @@
 <script>
 import PersonalDetails from "./component/patient/PersonalDetails";
 import MedicalRecords from "./component/patient/MedicalRecords";
+import AccessManagement from "./component/patient/AccessManagement";
+import { log } from 'util';
 
 export default {
   name: "app",
   components: {
     "personal-details": PersonalDetails,
-    "medical-records": MedicalRecords
+    "medical-records": MedicalRecords,
+    "access-management": AccessManagement
   },
   data() {
     return {
       user_info: {},
-      medical_records: []
+      medical_records: [],
+      list_prac: []
     };
   },
   mounted: function() {
@@ -49,11 +55,21 @@ export default {
     this.$http.get("/patient").then(res => {
       let data = res.body;
       self.user_info = data[0];
+      console.log(self.$localStorage.get("user_id"));
+      self.$localStorage.set("user_id", self.user_info.owner.split("#")[1]);
+      console.log(self.$localStorage.get("user_id"));
     });
 
     this.$http.get("/medicalrecord").then(res => {
       self.medical_records = res.body;
     });
+
+    this.$http.get("/practitioner-public-profile").then(res => {
+      console.log(res.body);
+      
+      self.list_prac = res.body
+    })
+
   }
 };
 </script>

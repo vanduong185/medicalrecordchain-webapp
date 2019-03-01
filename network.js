@@ -146,5 +146,72 @@ module.exports = {
           callback("success")
         });
       });
+  },
+  getPractitionerPublicProfile(callback) {
+    businessNetworkConnection.getAssetRegistry(namespace + ".PractitionerPublicProfile").then(p => {
+      p.getAll().then(practitioners => {
+        businessNetworkConnection.getParticipantRegistry(namespace + ".Patient").then(participant => {
+          participant.getAll().then(patients => {
+            current_patient = patients[0];
+            
+            list_authorized_prac = [];
+            list_unauthorized_prac = [];
+            practitioners.forEach(prac => {
+              tmp_prac = {
+                "id": prac.owner["$identifier"],
+                "firstname": prac.firstname,
+                "lastname": prac.lastname,
+                "dob": prac.Dob,
+                "email": prac.email,
+                "workplace": {
+                  "name": prac.workplace.name,
+                  "address": {
+                    "street": prac.workplace.address.street,
+                    "house": prac.workplace.address.house,
+                    "city": prac.workplace.address.city
+                  }
+                },
+                "qualifications": prac.qualifications
+              }
+              if (current_patient.authorized.indexOf(prac.owner["$identifier"]) > -1) {
+                
+                list_authorized_prac.push(tmp_prac)
+              }
+              else {
+                list_unauthorized_prac.push(tmp_prac)
+              }
+            })
+            
+            callback(list_authorized_prac, list_unauthorized_prac)
+          })
+        })
+      })
+    })
+  },
+  grantAccessMedicalRecord(patient_id, prac_id, callback) {
+    let serializer = businessNetworkConnection.getBusinessNetwork().getSerializer();
+
+    let resource = serializer.fromJSON({
+      "$class": "org.example.medicalrecord.GrantAccessMedicalRecord",
+      "practitioner": `resource:org.example.medicalrecord.Practitioner#${prac_id}`,
+      "patient": `resource:org.example.medicalrecord.Patient#${patient_id}`
+    });
+
+    businessNetworkConnection.submitTransaction(resource).then(result => {
+      callback("success")
+    })
+  },
+  revokeAccessMedicalRecord(patient_id, prac_id, callback) {
+    let serializer = businessNetworkConnection.getBusinessNetwork().getSerializer();
+
+    let resource = serializer.fromJSON({
+      "$class": "org.example.medicalrecord.RevokeAccessMedicalRecord",
+      "practitioner": `resource:org.example.medicalrecord.Practitioner#${prac_id}`,
+      "patient": `resource:org.example.medicalrecord.Patient#${patient_id}`
+    });
+
+    businessNetworkConnection.submitTransaction(resource).then(result => {
+      callback("success")
+    })
   }
 };

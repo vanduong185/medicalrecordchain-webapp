@@ -64,6 +64,38 @@ app.put("/patient", function(req, res) {
   })
 })
 
+app.get("/practitioner-public-profile", function(req, res) {
+  network.getPractitionerPublicProfile(function(list_authorized_prac, list_unauthorized_prac) {
+    data = {
+      list_authorized_prac: list_authorized_prac,
+      list_unauthorized_prac: list_unauthorized_prac,
+    }
+    res.send(data)
+  })
+})
+
+app.post("/grant-access-medical-record", function(req, res) {
+  data = req.body;
+  network.grantAccessMedicalRecord(data.pat_id, data.prac_id, function(message) {
+    if (message == "success") {
+      res.json({
+        message: message
+      })
+    }
+  })
+})
+
+app.post("/revoke-access-medical-record", function(req, res) {
+  data = req.body;
+  network.revokeAccessMedicalRecord(data.pat_id, data.prac_id, function(message) {
+    if (message == "success") {
+      res.json({
+        message: message
+      })
+    }
+  })
+})
+
 app.listen(8000, function() {
   console.log("App listening on port 8000");
 })
