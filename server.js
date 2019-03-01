@@ -63,7 +63,7 @@ app.put("/patient", function (req, res) {
   })
 })
 app.post("/register", function (req, res) {
-  network.registerPatient(req.body.id,req.body.idCard).then((response) =>{
+  network.registerPatient(req.body.id, req.body.cardName).then((response) => {
     if (message == "success") {
       response.json({
         message: "success"
@@ -77,7 +77,21 @@ app.post("/register", function (req, res) {
   })
 })
 app.post("/login", function (req, res) {
-  network.logout(req.body.idCard).then((response) =>{
+  network.connect(req.body.cardName).then((response) => {
+    if (message == "success") {
+      response.json({
+        message: "success"
+      })
+    }
+    else {
+      response.json({
+        message: "fail"
+      })
+    }
+  })
+})
+app.post("/logout", function (req, res) {
+  network.logout(req.body.cardName).then((response) => {
     if (message == "success") {
       response.json({
         message: "success"

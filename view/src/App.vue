@@ -73,7 +73,7 @@ export default {
       self = this;
       console.log(this.id);
       this.$http.post("/logout", {
-        idCard: self.user_info.idCard
+        "cardName": self.user_info.cardName
       });
     }
   }

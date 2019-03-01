@@ -20,7 +20,7 @@
                 <i class="fa fa-lock"></i>
               </span>
             </div>
-            <input type="idcard" class="form-control" id="idcard" placeholder="ID Card" v-model="idCard" required>
+            <input type="cardName" class="form-control" id="cardName" placeholder="ID Card" v-model="cardName" required>
           </div>
           <div class="form-group">
             <button class="btn btn-primary btn-block" @click="register()">Create Account</button>
@@ -42,7 +42,7 @@ export default {
   data() {
     return {
       id:"",
-      idCard:""
+      cardName:""
       
     };
   },
@@ -52,7 +52,7 @@ export default {
       console.log(this.id)
       this.$http.post("/register", {
         "id": this.id,
-        "idCard":this.idCard
+        "cardName":this.cardName
       });
     }
   }

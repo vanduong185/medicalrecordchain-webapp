@@ -12,7 +12,14 @@
                 <i class="fa fa-lock"></i>
               </span>
             </div>
-            <input type="idcard" class="form-control" id="idcard" placeholder="ID Card" v-model="idCard" required>
+            <input
+              type="cardName"
+              class="form-control"
+              id="cardName"
+              placeholder="Card Name"
+              v-model="cardName"
+              required
+            >
           </div>
           <div class="form-group">
             <button class="btn btn-primary btn-block" @click="login()">LogIn</button>
@@ -30,17 +37,17 @@
 
 <script>
 export default {
-  name: "register",
+  name: "login",
   data() {
     return {
-      idCard:""
-      
+      cardName: ""
     };
   },
   methods: {
     login() {
-      this.$http.post("/register", {
-        "idCard":this.idCard
+      self = this;
+      this.$http.post("/login", {
+        "cardName": self.cardName
       });
     }
   }

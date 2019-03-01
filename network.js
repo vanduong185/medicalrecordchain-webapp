@@ -97,7 +97,7 @@ module.exports = {
   logout: async function (cardname) {
     businessNetworkConnection = new BusinessNetworkConnection();
     await businessNetworkConnection.disconnect(cardname);
-    console.log("connected business network");
+    console.log("disconnected business network");
 
     return true;
   },
