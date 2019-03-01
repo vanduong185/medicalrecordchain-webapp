@@ -58,8 +58,8 @@ export default {
     });
 
     this.$http.get("/practition").then(res => {
-      let data = res.body;
-      self.practition_infor = data[0];
+      let data1 = res.body;
+      self.practition_infor = data1[0];
     });
 
     this.$http.get("/medicalrecord").then(res => {

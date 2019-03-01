@@ -23,12 +23,12 @@
       </div>
       <div class="col-md-4">
         <b-form-group label="City:">
-          <b-form-input id="practition_city" v-model="practition_infor.address.city" required/>
+          <b-form-input id="practition_city" v-model="practition_infor.workplace.address.city" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
         <b-form-group label="Street:">
-          <b-form-input id="practition_street" v-model="practition_infor.address.street" required/>
+          <b-form-input id="practition_street" v-model="practition_infor.workplace.address.street" required/>
         </b-form-group>
       </div>
     </div>
