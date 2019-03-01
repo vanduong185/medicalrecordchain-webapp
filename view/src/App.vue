@@ -2,7 +2,10 @@
   <div id="app">
     <div>
       <b-navbar toggleable="lg" type="dark" variant="info">
-        <b-navbar-brand href="#">Electronic Medical Record</b-navbar-brand>
+        <b-navbar-brand href="#">
+          Electronic Medical Record
+          <button class="btn btn-danger" @click=" logout()">Log out</button>
+        </b-navbar-brand>
 
         <b-navbar-toggle target="nav_collapse"/>
 
@@ -23,6 +26,12 @@
         <medical-records v-bind:medical_records="medical_records"></medical-records>
       </b-tab>
       <b-tab title="Access management"></b-tab>
+      <b-tab title="Register">
+        <register></register>
+      </b-tab>
+      <b-tab title="LogIn">
+        <login></login>
+      </b-tab>
     </b-tabs>
   </div>
 </template>
@@ -30,17 +39,21 @@
 <script>
 import PersonalDetails from "./component/patient/PersonalDetails";
 import MedicalRecords from "./component/patient/MedicalRecords";
+import Register from "./component/register/Register";
+import LogIn from "./component/login/LogIn";
 
 export default {
   name: "app",
   components: {
     "personal-details": PersonalDetails,
-    "medical-records": MedicalRecords
+    "medical-records": MedicalRecords,
+    register: Register,
+    login: LogIn
   },
   data() {
     return {
       user_info: {},
-      medical_records: []
+      medical_records: [],
     };
   },
   mounted: function() {
@@ -54,30 +67,28 @@ export default {
     this.$http.get("/medicalrecord").then(res => {
       self.medical_records = res.body;
     });
+  },
+  methods: {
+    logout() {
+      self = this;
+      console.log(this.id);
+      this.$http.post("/logout", {
+        idCard: self.user_info.idCard
+      });
+    }
   }
 };
 </script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  position: relative;
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
-h1,
-h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
+button {
+  float: right;
 }
 </style>

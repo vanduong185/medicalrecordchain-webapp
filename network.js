@@ -8,7 +8,7 @@ const {
 } = require("composer-common");
 
 //declate namespace
-const namespace = "org.example.medicalrecord";
+const namespace = "org.example.medicalchain";
 
 //in-memory card store for testing so cards are not persisted to the file system
 const cardStore = require("composer-common").NetworkCardStoreManager.getCardStore(
@@ -46,30 +46,62 @@ async function importCardForIdentity(cardName, identity) {
 }
 
 module.exports = {
-  registerMember: async function(cardId, firstName, lastName, email) {
+  registerPatient: async function (id, cardName) {
     businessNetworkConnection = new BusinessNetworkConnection();
     await businessNetworkConnection.connect("admin@medicalrecord");
 
     factory = businessNetworkConnection.getBusinessNetwork().getFactory();
 
-    const member = factory.newResource(namespace, "Patient", "p1");
+    const patient = factory.newResource(namespace, "Patient", id);
+    patient.authorized = [];
     const participantRegistry = await businessNetworkConnection.getParticipantRegistry(
       namespace + ".Patient"
     );
-    await participantRegistry.add(member);
+    await participantRegistry.add(patient);
 
     const identity = await businessNetworkConnection.issueIdentity(
-      namespace + ".Patient#" + "p1",
-      cardId
+      namespace + ".Patient#" + id,
+      cardName
     );
 
-    await importCardForIdentity(cardId, identity);
+    await importCardForIdentity(cardName, identity);
 
-    await businessNetworkConnection.disconnect("admin@clp-network");
+    await businessNetworkConnection.disconnect("admin@medicalrecord");
 
     return true;
   },
-  connect: async function(cardname) {
+  registerPratitioner: async function (id, cardName) {
+    businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.connect("admin@medicalrecord");
+
+    factory = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    const practitioner = factory.newResource(namespace, "Pratitioner", id);
+    practitioner.authorized = [];
+    const participantRegistry = await businessNetworkConnection.getParticipantRegistry(
+      namespace + ".Pratitioner"
+    );
+    await participantRegistry.add(practitioner);
+
+    const identity = await businessNetworkConnection.issueIdentity(
+      namespace + ".Pratitioner#" + id,
+      cardName
+    );
+
+    await importCardForIdentity(cardName, identity);
+
+    await businessNetworkConnection.disconnect("admin@medicalrecord");
+
+    return true;
+  },
+  logout: async function (cardname) {
+    businessNetworkConnection = new BusinessNetworkConnection();
+    await businessNetworkConnection.disconnect(cardname);
+    console.log("connected business network");
+
+    return true;
+  },
+  connect: async function (cardname) {
     businessNetworkConnection = new BusinessNetworkConnection();
     await businessNetworkConnection.connect(cardname);
     console.log("connected business network");
@@ -79,7 +111,7 @@ module.exports = {
   getBusiness() {
     return businessNetworkConnection;
   },
-  getPersonalDetails: function(callback) {
+  getPersonalDetails: function (callback) {
     businessNetworkConnection
       .getAssetRegistry(namespace + ".PersonalDetails")
       .then(p => {
@@ -88,7 +120,7 @@ module.exports = {
         });
       });
   },
-  getMedicalRecords: function(callback) {
+  getMedicalRecords: function (callback) {
     businessNetworkConnection
       .getAssetRegistry(namespace + ".MedicalRecord")
       .then(m => {
@@ -97,7 +129,7 @@ module.exports = {
         });
       });
   },
-  getMedicalRecordDetails: function(data, callback) {
+  getMedicalRecordDetails: function (data, callback) {
     var histories = [];
     businessNetworkConnection
       .getTransactionRegistry(`${namespace}.UpdateMedicalRecord`)
