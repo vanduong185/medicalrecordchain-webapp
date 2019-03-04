@@ -15,7 +15,7 @@
             type="idcard"
             class="form-control"
             id="cardname"
-            placeholder="Enter your card name"
+            placeholder="Enter your identity card number"
             v-model="cardname"
             required
           >
@@ -28,7 +28,7 @@
             required
           >
             <b-form-radio value="Patient">Patient</b-form-radio>
-            <b-form-radio value="Practitioner">Practitioner</b-form-radio>
+            <b-form-radio value="Practitioner">Doctor</b-form-radio>
           </b-form-radio-group>
         </b-form-group>
         <div class="form-group">
@@ -36,7 +36,7 @@
         </div>
         <p class="text-center">
           Not registered?
-          <a href>Create an account</a>
+          <router-link to="/register">Create an account</router-link>
         </p>
       </div>
     </div>

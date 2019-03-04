@@ -1,5 +1,6 @@
 <template>
   <div id="personal-details">
+    <h3 class="mb-3">Personal details</h3>
     <div class="row">
       <div class="col-md-4">
         <b-form-group label="First name:">
@@ -34,7 +35,7 @@
     </div>
 
     <div class="float-right mt-3">
-      <b-button variant="outline-primary" @click="update()" >Update</b-button>
+      <b-button variant="success" @click="update()" >Update</b-button>
     </div>
   </div>
 </template>

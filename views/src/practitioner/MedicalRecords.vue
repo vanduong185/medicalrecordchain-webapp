@@ -1,5 +1,6 @@
 <template>
   <div id="medical-records">
+    <h3 class="mb-3">List of medical records</h3>
     <b-table
       selectable
       select-mode="single"
@@ -55,7 +56,7 @@ export default {
       selected_item: {
         id: ""
       },
-      new_content: "",
+      new_content: "Second visit: You have a flu",
       error: false
     };
   },

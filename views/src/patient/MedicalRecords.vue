@@ -1,5 +1,6 @@
 <template>
   <div id="medical-records">
+    <h3 class="mb-3">List of medical records</h3>
     <b-table
       selectable
       select-mode="single"

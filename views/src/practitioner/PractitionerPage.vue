@@ -1,7 +1,7 @@
 <template>
   <div id="practitioner">
     <div>
-      <b-jumbotron header="Hi practitioner" lead="Have a good day!" class="m-0 my-jumb"></b-jumbotron>
+      <b-jumbotron header="Hi doctor" lead="Have a good day!" class="m-0 my-jumb"></b-jumbotron>
     </div>
     <b-tabs content-class="mt-3" pills card>
       <b-tab title="Public profile" active>
@@ -10,7 +10,7 @@
       <b-tab title="Medical records">
         <medical-records v-bind:medical_records="medical_records"></medical-records>
       </b-tab>
-      <b-tab title="List patient">
+      <b-tab title="List of patient">
         <list-patient v-bind:list_patient="list_patient"></list-patient>
       </b-tab>
     </b-tabs>

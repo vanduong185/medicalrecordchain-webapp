@@ -1,16 +1,19 @@
 <template>
   <div id="access-management">
-    <div class="mt-3 mb-3">
-      <b-button variant="primary" @click="showGrantModal()">Grant new practitioner</b-button>
+    <div class="text-right">
+      <b-button variant="success" @click="showGrantModal()">Grant new doctor</b-button>
     </div>
     <br>
+    <h3 class="mb-3"> 
+      List of granted doctor
+    </h3>
     <div class="row m-0">
       <div v-for="prac in list_prac.list_authorized_prac" class="col-md-3 mb-1">
         <div class="p-3" style="background-color: #eee">
           <p class="m-1 title">{{ prac.firstname + " " + prac.lastname }}</p>
           <p class="m-0 info">{{ "ID: " + prac.id}}</p>
-          <p class="m-0 info">{{ prac.email }}</p>
-          <div class="mt-2">
+          <p class="m-0 info">{{ "Email: " + prac.email }}</p>
+          <div class="mt-2 text-right">
             <b-button variant="danger" size="sm" @click="revoke(prac)">Revoke</b-button>
           </div>
         </div>
@@ -18,9 +21,9 @@
     </div>
     <b-modal
       ref="grant_modal"
-      size="lg"
+      size="md"
       hide-footer
-      title="Grant new practitioner"
+      title="Grant new doctor"
     >
       <div class="row">
         <div class="col-md-12 mb-2" v-for="prac in list_prac.list_unauthorized_prac">
@@ -29,9 +32,9 @@
               {{ prac.firstname + " " + prac.lastname}}
             </p>
             <p class="m-0 info">{{ "ID: " + prac.id}}</p>
-            <p class="m-0 info">{{ prac.email }}</p>
-            <div class="mt-2">
-              <b-button variant="primary" size="sm" @click="grant_new(prac)">Grant</b-button>
+            <p class="m-0 info">{{ "Email: " + prac.email }}</p>
+            <div class="mt-2 text-right">
+              <b-button variant="success" size="sm" @click="grant_new(prac)">Grant</b-button>
             </div>
           </div>
         </div>

@@ -49,8 +49,6 @@ app.get("/api/patient/medicalrecord-details", function (req, res) {
 })
 
 app.put("/api/patient", function (req, res) {
-  console.log(req.body);
-  
   let cardname = req.body.cardname;
   network.updatePersonalDetails(cardname, req.body.user_info).then(message => {
     if (message == "success") {
@@ -142,7 +140,6 @@ app.get("/api/practitioner/medicalrecord-details", function (req, res) {
 app.post("/api/practitioner/create-medical-record", function(req, res) {
   let data = req.body;
   let cardname = req.body.cardname;
-  console.log(req.body);
   
   network.createMedicalRecord(cardname, data.pat_id, data.prac_id, data.content).then( message => {
     res.json({
@@ -163,11 +160,8 @@ app.post("/api/practitioner/update-medical-record", function(req, res) {
 
 app.post("/api/register-patient", function (req, res) {
   let data = req.body;
-  console.log(data);
   
-  network.registerPatient(data).then((message) =>{
-    console.log(message);
-    
+  network.registerPatient(data).then((message) => {
     if (message == "success") {
       res.json({
         message: "success"
@@ -183,11 +177,8 @@ app.post("/api/register-patient", function (req, res) {
 
 app.post("/api/register-practitioner", function (req, res) {
   let data = req.body;
-  console.log(data);
   
   network.registerPractitioner(data).then((message) =>{
-    console.log(message);
-    
     if (message == "success") {
       res.json({
         message: "success"

@@ -1,12 +1,13 @@
 <template>
   <div id="list-patient">
+    <h3 class="mb-3">List of patient</h3>
     <div class="row m-0">
       <div v-for="patient in list_patient" class="col-md-3 mb-1">
         <div class="p-3" style="background-color: #eee">
           <p class="m-1 title">{{ patient.firstname + " " + patient.lastname }}</p>
           <p class="m-0 info">{{ "ID: " + patient.owner.split("#").slice(-1)[0]}}</p>
           <p class="m-0 info">{{ "Email: " + patient.email }}</p>
-          <div class="mt-2">
+          <div class="mt-2 text-right">
             <b-button variant="success" size="sm" @click="show_modal(patient)">Create medical record</b-button>
           </div>
         </div>
@@ -23,7 +24,7 @@
             <p>Patient ID: </p>
           </b-col>
           <b-col md="9">
-            <p>{{ selected_patient.id }}</p>
+            <p>{{ (selected_patient.owner) ? selected_patient.owner.split("#").slice(-1)[0] : "" }}</p>
           </b-col>
           <b-col md="3">
             <p>Content: </p>
@@ -56,7 +57,7 @@ export default {
   data() {
     return {
       selected_patient: {},
-      new_content: ""
+      new_content: "First visit: You are overweight"
     }
   },
   methods: {
