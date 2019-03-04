@@ -1,5 +1,4 @@
 <template>
-import { log } from 'util';
   <div id="access-management">
     <div class="mt-3 mb-3">
       <b-button variant="primary" @click="showGrantModal()">Grant new practitioner</b-button>
@@ -11,8 +10,8 @@ import { log } from 'util';
           <p class="m-1 title">{{ prac.firstname + " " + prac.lastname }}</p>
           <p class="m-0 info">{{ "ID: " + prac.id}}</p>
           <p class="m-0 info">{{ prac.email }}</p>
-          <div>
-            <b-button variant="danger" @click="revoke(prac)">Revoke</b-button>
+          <div class="mt-2">
+            <b-button variant="danger" size="sm" @click="revoke(prac)">Revoke</b-button>
           </div>
         </div>
       </div>
@@ -24,15 +23,15 @@ import { log } from 'util';
       title="Grant new practitioner"
     >
       <div class="row">
-        <div class="col-md-12" v-for="prac in list_prac.list_unauthorized_prac">
+        <div class="col-md-12 mb-2" v-for="prac in list_prac.list_unauthorized_prac">
           <div class="p-2" style="background-color: #eee">
             <p class="m-1 title">
               {{ prac.firstname + " " + prac.lastname}}
             </p>
             <p class="m-0 info">{{ "ID: " + prac.id}}</p>
             <p class="m-0 info">{{ prac.email }}</p>
-            <div>
-              <b-button variant="primary" @click="grant_new(prac)">Grant</b-button>
+            <div class="mt-2">
+              <b-button variant="primary" size="sm" @click="grant_new(prac)">Grant</b-button>
             </div>
           </div>
         </div>
@@ -58,9 +57,10 @@ export default {
     },
     grant_new(prac) {
       self = this;
+      let current_user = JSON.parse(localStorage.getItem("user"));
       
-      this.$http.post("/grant-access-medical-record", {
-        pat_id: self.$localStorage.get("user_id"),
+      this.$http.post("/api/grant-access-medical-record", {
+        pat_id: current_user.id,
         prac_id: prac.id
       }).then((res) => {
         if (res.body.message == "success") {
@@ -80,9 +80,10 @@ export default {
     },
     revoke(prac) {
       self = this;
-
-      this.$http.post("/revoke-access-medical-record", {
-        pat_id: self.$localStorage.get("user_id"),
+      let current_user = JSON.parse(localStorage.getItem("user"));
+      
+      this.$http.post("/api/revoke-access-medical-record", {
+        pat_id: current_user.id,
         prac_id: prac.id
       }).then((res) => {
         if (res.body.message == "success") {
@@ -110,6 +111,6 @@ export default {
 .info {
   font-size: 14px;
   font-weight: 300;
-  color: #aaa;
+  color:gray;
 }
 </style>

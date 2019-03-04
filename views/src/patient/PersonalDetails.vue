@@ -1,34 +1,34 @@
 <template>
-  <div id="practitioner-public-details">
+  <div id="personal-details">
     <div class="row">
       <div class="col-md-4">
         <b-form-group label="First name:">
-          <b-form-input id="practition_firstname" v-model="practition_infor.firstname" required/>
+          <b-form-input id="firstname" v-model="user_info.firstname" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
         <b-form-group label="Last name:">
-          <b-form-input id="practition_lastname" v-model="practition_infor.lastname" required/>
+          <b-form-input id="lastname" v-model="user_info.lastname" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
         <b-form-group label="Email">
-          <b-form-input id="practition_email" type="email" v-model="practition_infor.email" required/>
+          <b-form-input id="email" type="email" v-model="user_info.email" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
         <b-form-group label="Date of birth:">
-          <b-form-input id="practition_dob" v-model="practition_infor.Dob" required/>
+          <b-form-input id="dob" v-model="user_info.Dob" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
         <b-form-group label="City:">
-          <b-form-input id="practition_city" v-model="practition_infor.address.city" required/>
+          <b-form-input id="city" v-model="user_info.address.city" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
         <b-form-group label="Street:">
-          <b-form-input id="practition_street" v-model="practition_infor.address.street" required/>
+          <b-form-input id="street" v-model="user_info.address.street" required/>
         </b-form-group>
       </div>
     </div>
@@ -41,9 +41,9 @@
 
 <script>
 export default {
-  name: "practitioner-public-details",
+  name: "personal-details",
   props: {
-    practition_infor: {
+    user_info: {
       type: Object
     }
   },
@@ -51,9 +51,14 @@ export default {
   methods: {
     update: function() {
       self = this;
-
-      this.$http.put("/practition", self.practition_infor).then(res => {
+      let current_user = JSON.parse(localStorage.getItem("user"));
+      let data = {
+        cardname: current_user.id,
+        user_info: self.user_info
+      }
+      this.$http.put("/api/patient", data).then(res => {
         if (res.body.message == "success") {
+
         }
       })
     }

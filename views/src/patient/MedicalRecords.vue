@@ -43,14 +43,17 @@ export default {
       this.selected_item = items[0];
 
       this.$refs.myModalRef.show();
+
+      let current_user = JSON.parse(localStorage.getItem("user"));
       this.$http
-        .get("/medicalrecord-details", {
+        .get("/api/patient/medicalrecord-details", {
           params: {
             data: {
               mr_id: items[0].id,
               pat_id: items[0].ownerId,
               prac_id: items[0].creatorId
-            }
+            },
+            cardname: current_user.id
           }
         })
         .then(res => {

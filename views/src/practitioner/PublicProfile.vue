@@ -1,5 +1,5 @@
 <template>
-  <div id="personal-details">
+  <div id="public-profile">
     <div class="row">
       <div class="col-md-4">
         <b-form-group label="First name:">
@@ -18,17 +18,17 @@
       </div>
       <div class="col-md-4">
         <b-form-group label="Date of birth:">
-          <b-form-input id="dob" v-model="user_info.Dob" required/>
+          <b-form-input id="dob" v-model="user_info.dob" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
-        <b-form-group label="City:">
-          <b-form-input id="city" v-model="user_info.address.city" required/>
+        <b-form-group label="Workplace:">
+          <b-form-input id="city" v-model="user_info.workplace.name" required/>
         </b-form-group>
       </div>
       <div class="col-md-4">
-        <b-form-group label="Street:">
-          <b-form-input id="street" v-model="user_info.address.street" required/>
+        <b-form-group label="Qualifications:">
+          <b-form-input id="street" v-model="user_info.qualifications" required/>
         </b-form-group>
       </div>
     </div>
@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: "personal-details",
+  name: "public-profile",
   props: {
     user_info: {
       type: Object
@@ -52,7 +52,7 @@ export default {
     update: function() {
       self = this;
 
-      this.$http.put("/patient", self.user_info).then(res => {
+      this.$http.put("/api/practitioner", self.user_info).then(res => {
         if (res.body.message == "success") {
 
         }
