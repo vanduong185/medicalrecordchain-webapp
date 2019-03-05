@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <b-navbar toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand href="#">Electronic Medical Record</b-navbar-brand>
+      <b-navbar-brand href="/">
+        Merechain - Electronic medical record
+      </b-navbar-brand>
 
       <b-navbar-toggle target="nav_collapse"/>
 

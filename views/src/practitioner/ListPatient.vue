@@ -8,7 +8,9 @@
           <p class="m-0 info">{{ "ID: " + patient.owner.split("#").slice(-1)[0]}}</p>
           <p class="m-0 info">{{ "Email: " + patient.email }}</p>
           <div class="mt-2 text-right">
-            <b-button variant="success" size="sm" @click="show_modal(patient)">Create medical record</b-button>
+            <b-button variant="success" size="sm" @click="show_modal(patient)">
+              Create medical record
+            </b-button>
           </div>
         </div>
       </div>
@@ -39,7 +41,13 @@
           </b-col>
         </b-row>
         <div class="mt-3 mb-2 text-right">
-          <b-button variant="primary" @click="create_new_medicalrecord()">Create</b-button>
+          <b-alert variant="danger" dismissible v-model="error">
+            Error !
+          </b-alert>
+          <b-button variant="primary" @click="create_new_medicalrecord()">
+            <b-spinner small v-if="is_waiting" variant="light" label="Spinning" />
+            <span v-else>Create</span>
+          </b-button>
         </div>
       </div>
     </b-modal>
@@ -57,7 +65,9 @@ export default {
   data() {
     return {
       selected_patient: {},
-      new_content: "First visit: You are overweight"
+      new_content: "First visit: You are overweight",
+      is_waiting: false,
+      error: false
     }
   },
   methods: {
@@ -66,6 +76,7 @@ export default {
       this.$refs.modal.show();
     },
     create_new_medicalrecord() {
+      this.is_waiting = true;
       let current_user = JSON.parse(localStorage.getItem("user")) 
       let data = {
         prac_id: current_user.id,
@@ -73,11 +84,16 @@ export default {
         content: this.new_content,
         cardname: current_user.id
       } 
-      console.log(data);
       self = this;
       this.$http.post("/api/practitioner/create-medical-record", data).then(res => {
         if (res.body.message == "success") {
+          self.is_waiting = false;
+          self.error = false;
           self.$refs.modal.hide();
+        }
+        else {
+          self.error = false;
+          self.is_waiting = false;
         }
       })
     }

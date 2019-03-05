@@ -35,7 +35,10 @@
     </div>
 
     <div class="float-right mt-3">
-      <b-button variant="success" @click="update()" >Update</b-button>
+      <b-button variant="success" @click="update()" >
+        <b-spinner small v-if="is_waiting" variant="light" label="Spinning" />
+        <span v-else>Update</span>
+      </b-button>
     </div>
   </div>
 </template>
@@ -48,10 +51,15 @@ export default {
       type: Object
     }
   },
-  data: {},
+  data() {
+    return {
+      is_waiting: false
+    }
+  },
   methods: {
     update: function() {
       self = this;
+      this.is_waiting = true;
       let current_user = JSON.parse(localStorage.getItem("user"));
       let data = {
         cardname: current_user.id,
@@ -59,7 +67,7 @@ export default {
       }
       this.$http.put("/api/patient", data).then(res => {
         if (res.body.message == "success") {
-
+          this.is_waiting = false;
         }
       })
     }
