@@ -27,7 +27,10 @@
           />
         </div>
         <div class="mt-3 mb-2 text-right">
-          <b-button variant="primary" @click="update_medical_record()">Update</b-button>
+          <b-button variant="primary" @click="update_medical_record()">
+            <b-spinner small v-if="is_waiting" variant="light" label="Spinning" />
+            <span v-else>Update</span>
+          </b-button>
         </div>
         <b-alert variant="danger" dismissible v-model="error">
           You don't have updating permissions in this medical record !
@@ -57,7 +60,8 @@ export default {
         id: ""
       },
       new_content: "Second visit: You have a flu",
-      error: false
+      error: false,
+      is_waiting: false
     };
   },
   methods: {
@@ -84,6 +88,7 @@ export default {
     },
     update_medical_record() {
       self = this;
+      this.is_waiting = true;
       let current_user = JSON.parse(localStorage.getItem("user"));
       let data = {
         medicalrecord_id: this.selected_item.id,
@@ -95,10 +100,12 @@ export default {
         console.log(res);
         if(res.body.message == "success") {
           this.error = false;
+          this.is_waiting = false;
           this.$refs.myModalRef.hide();
         }
         else {
           this.error = true;
+          this.is_waiting = false;
         }
       })
     }

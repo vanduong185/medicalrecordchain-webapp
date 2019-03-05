@@ -32,7 +32,13 @@
           </b-form-radio-group>
         </b-form-group>
         <div class="form-group">
-          <button class="btn btn-primary btn-block" @click="login()">Login</button>
+          <b-alert variant="danger" dismissible v-model="error">
+            Login fail ! Check your identity card number.
+          </b-alert>
+          <button class="btn btn-primary btn-block" @click="login()">
+            <b-spinner small v-if="is_logging_in" variant="light" label="Spinning" />
+            <span v-else>Login</span>
+          </button>
         </div>
         <p class="text-center">
           Not registered?
@@ -49,13 +55,15 @@ export default {
   data() {
     return {
       cardname: "",
-      type_user: ""
+      type_user: "",
+      is_logging_in: false,
+      error: false
     };
   },
   methods: {
     login() {
       self = this;
-
+      this.is_logging_in = true;
       this.$http
         .post("/api/login", {
           cardname: this.cardname,
@@ -64,6 +72,7 @@ export default {
         .then(res => {
           console.log(res);
           if (res.body.message == "success") {
+            self.error = false
             let arr = res.body.user["$class"].split(".");
             let type = arr[arr.length - 1]
             let user = {
@@ -72,12 +81,17 @@ export default {
             }
             console.log(user);
             localStorage.setItem('user', JSON.stringify(user));
+            self.is_logging_in = false;
             if (user.type == "Patient") {
               self.$router.push('patient') 
             }
             if (user.type == "Practitioner") {
               self.$router.push("practitioner")
             }
+          }
+          else {
+            self.is_logging_in = false;
+            self.error = true;
           }
         });
     }

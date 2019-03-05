@@ -67,14 +67,17 @@
           />
         </b-form-group>
         <div class="form-group">
-          <button class="btn btn-primary btn-block" @click="register()">Register</button>
+          <b-alert variant="danger" dismissible v-model="error">
+            Fail! Use another identity card number or check your information.
+          </b-alert>
+          <b-alert variant="success" dismissible v-model="success">
+            Success! <router-link to="/login">Go to login page.</router-link>
+          </b-alert>
+          <button class="btn btn-primary btn-block" @click="register()">
+            <b-spinner small v-if="is_waiting" variant="light" label="Spinning" />
+            <span v-else>Register</span>
+          </button>
         </div>
-        <b-alert variant="danger" dismissible v-model="error">
-          Fail! Use another identity card number or check your information.
-        </b-alert>
-        <b-alert variant="success" dismissible v-model="success">
-          Success! Go to login page.
-        </b-alert>
       </div>
     </div>
   </div>
@@ -93,24 +96,27 @@ export default {
       },
       type_user: "",
       error: false,
-      success: false
+      success: false,
+      is_waiting: false
     };
   },
   methods: {
     register() {
       self = this;
       console.log(self.user);
-      
+      this.is_waiting = true;
       if (this.type_user == "Patient") {
         this.$http.post("/api/register-patient", self.user).then(res => {
           console.log(res);
           if (res.body.message == "success") {
             self.success = true;
             self.error = false;
+            self.is_waiting = false;
           }
           else {
             self.success = false;
             self.error = true;
+            self.is_waiting = false;
           }
         })
       }
@@ -120,10 +126,12 @@ export default {
           if (res.body.message == "success") {
             self.success = true;
             self.error = false;
+            self.is_waiting = false;
           }
           else {
             self.success = false;
             self.error = true;
+            self.is_waiting = false;
           }
         })
       }

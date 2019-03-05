@@ -14,7 +14,10 @@
           <p class="m-0 info">{{ "ID: " + prac.id}}</p>
           <p class="m-0 info">{{ "Email: " + prac.email }}</p>
           <div class="mt-2 text-right">
-            <b-button variant="danger" size="sm" @click="revoke(prac)">Revoke</b-button>
+            <b-button variant="danger" size="sm" @click="revoke(prac)">
+              <b-spinner small v-if="is_waiting2" variant="light" label="Spinning" />
+              <span v-else>Revoke</span>
+            </b-button>
           </div>
         </div>
       </div>
@@ -34,7 +37,10 @@
             <p class="m-0 info">{{ "ID: " + prac.id}}</p>
             <p class="m-0 info">{{ "Email: " + prac.email }}</p>
             <div class="mt-2 text-right">
-              <b-button variant="success" size="sm" @click="grant_new(prac)">Grant</b-button>
+              <b-button variant="success" size="sm" @click="grant_new(prac)">
+                <b-spinner small v-if="is_waiting" variant="light" label="Spinning" />
+                <span v-else>Grant</span>
+              </b-button>
             </div>
           </div>
         </div>
@@ -51,8 +57,11 @@ export default {
       type: Object
     }
   },
-  data: {
-    
+  data() {
+    return {
+      is_waiting: false,
+      is_waiting2: false
+    }
   },
   methods: {
     showGrantModal() {
@@ -60,6 +69,7 @@ export default {
     },
     grant_new(prac) {
       self = this;
+      this.is_waiting = true;
       let current_user = JSON.parse(localStorage.getItem("user"));
       
       this.$http.post("/api/grant-access-medical-record", {
@@ -74,8 +84,11 @@ export default {
               self.list_prac.list_unauthorized_prac.splice(i, 1);
             }
           }
-
+          self.is_waiting = false;
           this.$refs.grant_modal.hide();
+        }
+        else {
+          self.is_waiting = false;
         }
       }).catch((err) => {
         
@@ -83,6 +96,7 @@ export default {
     },
     revoke(prac) {
       self = this;
+      this.is_waiting2 = true;
       let current_user = JSON.parse(localStorage.getItem("user"));
       
       this.$http.post("/api/revoke-access-medical-record", {
@@ -97,8 +111,9 @@ export default {
             }
           }
         }
+        self.is_waiting2 = false;
       }).catch((err) => {
-        
+        self.is_waiting2 = false;
       });
     }
   }
